@@ -1,0 +1,12 @@
+if [ -z "${JAVA_HOME}" ] ; then
+        JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64"
+else   
+        echo "Using system JAVA_HOME '$JAVA_HOME'"
+fi
+# The 'correct' place for Ubuntu, if not set
+if [ -z "${TOMCAT_INSTANCE_BASE}" ] ; then
+        TOMCAT_INSTANCE_BASE="/var/lib"
+fi
+
+CATALINA_HOME=/usr/share/tomcat7
+export CATALINA_HOME TOMCAT_INSTANCE_BASE JAVA_HOME

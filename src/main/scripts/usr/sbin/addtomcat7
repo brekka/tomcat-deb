@@ -1,0 +1,105 @@
+#!/bin/bash
+#
+# Creates a new Tomcat runtime instance. A runtime instance is a  
+# dedicated system user account where the home directory is used
+# as the ${CATALINA_BASE}. Thus the Tomcat installation binaries
+# and default configuration are retained in the 
+# /usr/share/tomcat7 directory while application specific 
+# settings are kept within the home directory of the instance 
+# user. 
+#
+# For example if you run this script with the argument 'wiki',
+# then a new system user will be created with that name, with a
+# home directory set to "/var/lib/wiki". That directory will then
+# contain the various directories needed by Tomcat such as conf,
+# logs, webapps, etc. This script will also create an init.d 
+# entry for automatic startup with the service name 
+# [user].
+#
+# When making changes to the Tomcat instance, switch to the 
+# user first using "su - [user]". 
+# 
+# Last modified 2013-02-19 by Andrew Taylor
+#
+
+# Import default settings
+. /etc/default/tomcat7
+
+# Change the variable below to be the user to create.
+TOMCAT_USER=$1
+DEFAULT_CONFIG_DIR="${CATALINA_HOME}/conf"
+
+if [ -z "${TOMCAT_USER}" ] ; then
+    echo "You must specify the instance name as the first argument"
+    exit 1
+fi
+
+# Instance locations
+CONFIG_DIR="/etc/${TOMCAT_USER}"
+LOG_DIR="/var/log/${TOMCAT_USER}"
+TMP_DIR="/var/tmp/${TOMCAT_USER}"
+INIT_SCRIPT="/etc/init.d/${TOMCAT_USER}"
+CATALINA_BASE="${TOMCAT_INSTANCE_BASE}/${TOMCAT_USER}"
+
+if [ -f "${INIT_SCRIPT}" ] ; then
+    echo "There is already an init script '${INIT_SCRIPT}', aborting"
+    exit 1
+fi
+
+# Check that there is not already a configuration folder for this application
+if [ -d "${CONFIG_DIR}" ] ; then
+	echo "Configuration directory '${CONFIG_DIR}' already exists, aborting"
+    exit 1
+fi
+
+
+
+# Create the system user account
+useradd -d "${CATALINA_BASE}" -m -r -s /bin/bash "$TOMCAT_USER"
+if [ "$?" != "0" ] ; then
+    echo "Unable to create the user '${TOMCAT_USER}', most likely it already exists"
+    exit 1
+fi
+
+# Prepare the Tomcat base directories
+mkdir "${CONFIG_DIR}"
+mkdir "${CONFIG_DIR}/Catalina"
+mkdir "${LOG_DIR}"
+mkdir "${TMP_DIR}"
+mkdir "${CATALINA_BASE}/webapps"
+mkdir "${CATALINA_BASE}/work"
+mkdir "${CATALINA_BASE}/lib"
+mkdir "${CATALINA_BASE}/bin"
+
+# Maintain the Tomcat structure
+ln -s "${CONFIG_DIR}" "${CATALINA_BASE}/conf"
+ln -s "${LOG_DIR}" "${CATALINA_BASE}/logs"
+ln -s "${TMP_DIR}" "${CATALINA_BASE}/temp"
+
+# Copy the configuration files (as a starting point)
+cp -R "${DEFAULT_CONFIG_DIR}"/* "${CONFIG_DIR}"
+
+# Create init script
+echo "#!/bin/bash" > "${INIT_SCRIPT}"
+echo "### BEGIN INIT INFO" >> "${INIT_SCRIPT}"
+echo "# Provides:         ${TOMCAT_USER} (Tomcat)" >> "${INIT_SCRIPT}"
+echo "# Required-Start:    \$syslog" >> "${INIT_SCRIPT}"
+echo "# Required-Stop:     \$syslog" >> "${INIT_SCRIPT}"
+echo "# Default-Start:     2 3 4 5" >> "${INIT_SCRIPT}"
+echo "# Default-Stop:      0 1 6" >> "${INIT_SCRIPT}"
+echo "# Short-Description: Control ${TOMCAT_USER} tomcat service" >> "${INIT_SCRIPT}"
+echo "# Description:       Tomcat based service hosting the ${TOMCAT_USER} application (see '${CATALINA_BASE}')" >> "${INIT_SCRIPT}"
+echo "### END INIT INFO" >> "${INIT_SCRIPT}"
+echo ". /etc/default/tomcat7" >> "${INIT_SCRIPT}"
+echo "# Uncomment to override defaults from /etc/default/tomcat7" >> "${INIT_SCRIPT}"
+echo -e "#export JAVA_HOME=$JAVA_HOME" >> "${INIT_SCRIPT}"
+echo -e "#export CATALINA_HOME=$CATALINA_HOME" >> "${INIT_SCRIPT}"
+echo -e "export CATALINA_BASE=$CATALINA_BASE" >> "${INIT_SCRIPT}"
+echo -e "/usr/sbin/tomcat7-init \$1 $TOMCAT_USER" >> "${INIT_SCRIPT}"
+chmod 755 "${INIT_SCRIPT}"
+
+# Ensure permissions are set correctly
+chown -R $TOMCAT_USER:$TOMCAT_USER "${CATALINA_BASE}/webapps" "${CATALINA_BASE}/work" "${TMP_DIR}" "${LOG_DIR}" "${CONFIG_DIR}/Catalina"
+
+INIT_SCRIPT_NAME=`basename ${INIT_SCRIPT}`
+update-rc.d ${INIT_SCRIPT_NAME} defaults 90 10

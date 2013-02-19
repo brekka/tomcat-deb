@@ -1,0 +1,7 @@
+Package: tomcat7
+Version: [[version]]
+Section: misc
+Priority: low
+Architecture: all
+Description: Apache Tomcat 7 (multi-instance).
+Maintainer: andrew@brekka.org

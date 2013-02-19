@@ -1,0 +1,137 @@
+#!/bin/bash
+#
+# Control script for starting/stopping a named Tomcat 7 instance as
+# created by the script '/usr/sbin/addtomcat7'.
+# 
+# Last modified 2013-02-19 by Andrew Taylor
+#
+
+# Seconds to wait for a restart
+RESTART_WAIT=60
+
+TOMCAT_USER="$2"
+if [ -z "${TOMCAT_USER}" ] ; then
+    TOMCAT_USER="${USER}"
+fi
+
+# Check that the required env vars have been set by the caller
+if [ -z "${CATALINA_BASE}" ] ; then
+    echo "No catalina base found, was it set by the calling script?"
+    exit 1
+fi
+if [ -z "${CATALINA_HOME}" ] ; then
+    echo "No catalina home found, was it set by the calling script?"
+    exit 1
+fi
+if [ -z "${JAVA_HOME}" ] ; then
+    echo "No Java home found, was it set by the calling script?"
+    exit 1
+fi
+
+CATALINA_PID="${CATALINA_BASE}/tomcat.pid"
+
+# Verify the directory does exist
+if [ ! -d "${CATALINA_BASE}" ] ; then
+    echo "User '$TOMCAT_USER' base directory does not exist at '$CATALINA_BASE'"
+    exit 1
+fi
+
+# Make sure the working directory is set to the instance home
+cd "${CATALINA_BASE}"
+
+export JAVA_HOME CATALINA_BASE CATALINA_HOME CATALINA_PID
+
+# Prepare the run-as
+if [ "$USER" != "${TOMCAT_USER}" ] ; then
+    RUNAS="su ${TOMCAT_USER}"
+fi
+
+# Identify whether the process is already running or not
+function identify {
+    runningPid=`pgrep -u $TOMCAT_USER -f -x ".+java.+catalina.base=${CATALINA_BASE}.+"`
+    running=$?
+}
+
+# Give the user a chance to override the startup script
+function tomcat-startup {
+    if [ -x "${CATALINA_BASE}/bin/startup.sh" ] ; then
+        ${RUNAS} "${CATALINA_BASE}/bin/startup.sh"
+    else
+        ${RUNAS} "${CATALINA_HOME}/bin/startup.sh"
+    fi
+}
+
+# Give the user a chance to override the shutdown script
+function tomcat-shutdown {
+    if [ -x "${CATALINA_BASE}/bin/shutdown.sh" ] ; then
+        ${RUNAS} "${CATALINA_BASE}/bin/shutdown.sh"
+    else
+        ${RUNAS} "${CATALINA_HOME}/bin/shutdown.sh"
+    fi
+}
+
+case $1 in
+start)
+	identify
+    if [ "$running" = "0" ] ; then
+        echo "Tomcat instance '$TOMCAT_USER' is currently running as process $runningPid"
+        exit 1
+    fi
+    # We know for a fact that the instance is not running so make sure the PID file does not exist.
+    if [ -f "$CATALINA_PID" ] ; then 
+        rm $CATALINA_PID
+    fi
+    tomcat-startup
+    ;;
+stop)  
+	identify
+    if [ "$running" = "1" ] ; then
+        echo "Tomcat instance '$TOMCAT_USER' is not currently running"
+        exit 1
+    fi
+    tomcat-shutdown
+    ;;
+restart)
+    identify
+    if [ "$running" = "0" ] ; then
+        # Currently running, need to stop first
+        echo "Stopping the Tomcat instance '$TOMCAT_USER' currently at PID $runningPid"
+        tomcat-shutdown
+        # Wait for tomcat to shutdown
+        printf "Progress: "
+        COUNTER=0
+        while [  $COUNTER -lt $RESTART_WAIT ]; do
+             let COUNTER=COUNTER+1 
+             printf "."
+             sleep 1
+             identify
+             if [ "$running" = "1" ] ; then
+                 printf "\n"
+                 break
+             fi
+        done
+        identify
+        if [ "$running" = "0" ] ; then
+             echo "Failed to stop the Tomcat instance '$TOMCAT_USER' PID $RUNNING_PID within ${RESTART_WAIT} seconds."
+             echo "You will need to kill it manually"
+             exit 1
+         fi
+    fi
+    printf "\nStarting Tomcat\n"
+    tomcat-startup
+    ;;
+status)
+    identify
+    if [ "$running" = "0" ] ; then
+        echo "Tomcat instance '${TOMCAT_USER}' is running (pid $runningPid)."
+    else
+        echo "Tomcat instance '${TOMCAT_USER}' is not running."
+    fi
+    exit $running
+    ;;
+*)
+    echo "Unsupported operation $1"
+    exit 1
+    ;;
+esac
+exit 0

@@ -1,0 +1,62 @@
+#!/bin/bash
+#
+# Deletes a Tomcat runtime instance (as created by 'addtomcat7').
+#
+# Last modified 2013-02-19 by Andrew Taylor
+#
+
+# Import default settings
+. /etc/default/tomcat7
+
+# Change the variable below to be the user to create.
+TOMCAT_USER=$1
+
+# The 'correct' place for Ubuntu, if not set
+if [ -z "${TOMCAT_INSTANCE_BASE}" ] ; then
+	TOMCAT_INSTANCE_BASE="/var/lib"
+fi
+
+# Instance paths
+CONFIG_DIR="/etc/${TOMCAT_USER}"
+LOG_DIR="/var/log/${TOMCAT_USER}"
+TMP_DIR="/var/tmp/${TOMCAT_USER}"
+INIT_SCRIPT="/etc/init.d/${TOMCAT_USER}"
+if [ -z "${CATALINA_BASE}" ] ; then
+    CATALINA_BASE="${TOMCAT_INSTANCE_BASE}/${TOMCAT_USER}"
+fi
+
+if [ -z "${TOMCAT_USER}" ] ; then
+    echo "You must specify the instance name as the only argument"
+    exit 1
+fi
+
+if [ ! -f "${INIT_SCRIPT}" ] ; then
+    echo "The instance name '${TOMCAT_USER}' does not appear to exist"
+    exit 1
+fi
+
+if [ ! -d "${CATALINA_BASE}" ] ; then
+    echo "No existing runtime instance found at directory '${CATALINA_BASE}'. Aborting..."
+    exit 1
+fi
+
+## Last chance to abort.
+echo -n "You are about to delete the Tomcat 7 instance '${TOMCAT_USER}' including all its configuration Are you sure you would you like to continue (yes or no)? "
+read -e execute_script
+if [ "$execute_script" != "yes" ]; then
+	echo "User aborted, type 'yes' if you really mean to continue"
+	exit 0
+fi
+
+deluser ${TOMCAT_USER}
+if [ "$?" != "0" ] ; then
+    echo "The Tomcat runtime instance user '${TOMCAT_USER}' could not be deleted. Aborting..."
+    exit 1
+fi
+
+INIT_SCRIPT_NAME=`basename ${INIT_SCRIPT}`
+update-rc.d -f ${INIT_SCRIPT_NAME} remove
+rm "${INIT_SCRIPT}"
+rm -Rf "${CONFIG_DIR}" "${LOG_DIR}" "${TMP_DIR}" "${CATALINA_BASE}"
+
+

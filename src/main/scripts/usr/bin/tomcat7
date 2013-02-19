@@ -1,0 +1,26 @@
+#!/bin/bash
+# 
+# Local control script for a Tomcat runtime instance.
+# When running as an instance user, allow the Tomcat
+# instance to be controlled.
+#
+# Last modified 2013-02-19 by Andrew Taylor
+#
+
+TOMCAT_USER=$1
+ACTION=$2
+
+if [ -z "$2" ] ; then
+    if [ -z "$1" ] ; then
+    	echo "usage: tomcat [appusername] start|stop|restart"
+        exit 1
+    fi
+    if [ -f "/etc/init.d/${USER}" ] ; then
+    	TOMCAT_USER=${USER}
+    	ACTION=$1
+    else
+        echo "Not currently a Tomcat 7 application user, you must specify the name of the application user, e.g. tomcat atlas start"
+    	exit 1
+    fi
+fi 
+/etc/init.d/${TOMCAT_USER} ${ACTION}
