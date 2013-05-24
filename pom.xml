@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.brekka</groupId>
     <artifactId>tomcat-deb</artifactId>
-    <version>7.0.37</version>
+    <version>7.0.40</version>
 
     <build>
         <plugins>
@@ -154,4 +154,12 @@
         <dist.dir>${project.build.directory}/tomcat-dist</dist.dir>
         <target.usr>/usr/share/tomcat7</target.usr>
     </properties>
+    
+    <distributionManagement>
+        <repository>
+            <id>brekka</id>
+            <name>brekka-releases</name>
+            <url>http://maven.brekka.co.uk/artifactory/libs-release-local</url>
+        </repository>
+    </distributionManagement>
 </project>
