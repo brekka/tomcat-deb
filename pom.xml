@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.brekka</groupId>
     <artifactId>tomcat-deb</artifactId>
-    <version>7.0.40</version>
+    <version>7.0.42</version>
 
     <build>
         <plugins>
@@ -112,6 +112,39 @@
                                         <group>loader</group>
                                     </mapper>
                                 </data>
+                                <data>
+                                    <src>${dist.dir}/apache-tomcat-${project.version}/LICENSE</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>${target.usr}</prefix>
+                                        <user>loader</user>
+                                        <group>loader</group>
+                                        <filemode>644</filemode>
+                                    </mapper>
+                                </data>
+                                <data>
+                                    <src>${dist.dir}/apache-tomcat-${project.version}/NOTICE</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>${target.usr}</prefix>
+                                        <user>loader</user>
+                                        <group>loader</group>
+                                        <filemode>644</filemode>
+                                    </mapper>
+                                </data>
+                                <data>
+                                    <src>${dist.dir}/apache-tomcat-${project.version}/RELEASE-NOTES</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>${target.usr}</prefix>
+                                        <user>loader</user>
+                                        <group>loader</group>
+                                        <filemode>644</filemode>
+                                    </mapper>
+                                </data>
                             </dataSet>
                         </configuration>
                     </execution>
@@ -150,6 +183,7 @@
             </plugins>
         </pluginManagement>
     </build>
+    
     <properties>
         <dist.dir>${project.build.directory}/tomcat-dist</dist.dir>
         <target.usr>/usr/share/tomcat7</target.usr>
@@ -157,9 +191,13 @@
     
     <distributionManagement>
         <repository>
-            <id>brekka</id>
-            <name>brekka-releases</name>
-            <url>http://maven.brekka.co.uk/artifactory/libs-release-local</url>
+            <id>brekka.org</id>
+            <name>VÍS Maven Repository-releases</name>
+            <url>https://brekka.org/maven/content/repositories/releases</url>
         </repository>
+        <snapshotRepository>
+            <id>brekka.org</id>
+            <url>https://brekka.org/maven/content/repositories/snapshots</url>
+        </snapshotRepository>
     </distributionManagement>
 </project>
