@@ -1,4 +1,4 @@
-Package: tomcat7
+Package: [[package_name]]
 Version: [[version]]
 Section: misc
 Priority: low

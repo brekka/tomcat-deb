@@ -19,12 +19,13 @@
     </licenses>
     
     <artifactId>tomcat-deb</artifactId>
-    <version>7.0.51-SNAPSHOT</version>
+    <version>7.0.50-SNAPSHOT</version>
     
     <properties>
         <tomcat.version>7.0.50</tomcat.version>
         <dist.dir>${project.build.directory}/tomcat-dist</dist.dir>
         <target.usr>/usr/share/tomcat7</target.usr>
+        <package_name>brekka-tomcat7</package_name>
     </properties>
 
     <build>
@@ -69,7 +70,7 @@
                         <configuration>
                             <verbose>true</verbose>
                             <controlDir>${basedir}/src/deb/control</controlDir>
-                            <deb>[[buildDir]]/tomcat_[[version]]_all.[[extension]]</deb>
+                            <deb>[[buildDir]]/[[package_name]]_[[version]]_all.[[extension]]</deb>
                             <dataSet>
                                 <data>
                                     <src>${dist.dir}/apache-tomcat-${tomcat.version}/lib</src>
