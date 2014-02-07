@@ -33,6 +33,12 @@ Requirements
 Java 7 or higher must be installed. Tested with OpenJDK 7.
 
 
+Releases
+--------
+
+The latest release is 7.0.50, and can be found here: [tomcat-deb-7.0.50.deb](https://brekka.org/maven/content/repositories/releases/org/brekka/tomcat-deb/7.0.50/tomcat-deb-7.0.50.deb)
+
+
 Licence
 -------
 
@@ -60,36 +66,38 @@ tailored to the application it will be hosting. The name of the instance will
 be used for the service name, run-as user and directory under '/var/lib' so it
 does need to be reasonably unique.
 
-
-Install using dpkg:
+##### Install using dpkg:
 
     dpkg -i tomcat_7.0.47_all.deb
     
-Create a new instance:
+
+##### Create a new instance:
 
     addtomcat7 tomcat7
     
-    This will create a new Tomcat 7 instance under "/var/lib/tomcat7" and will
-    run as a service under the user "tomcat7". Not that the "server.xml" must
-    be amended prior to starting the instance if more than one instance is to
-    be deployed. This addtomcat7 script makes no attempt to assign unique 
-    ports.
-    
-Delete an instance:
+This will create a new Tomcat 7 instance under "/var/lib/tomcat7" and will
+run as a service under the user "tomcat7". Not that the "server.xml" must
+be amended prior to starting the instance if more than one instance is to
+be deployed. This addtomcat7 script makes no attempt to assign unique 
+ports.
+
+
+##### Delete an instance:
 
     deltomcat7 tomcat7
     
-    The user will be prompted to confirm deletion of the instance. This will 
-    completely remove the instance include the configuration, logging and home
-    directory for the instance user.
-    
-Start/Stop/Restart an instance:
+The user will be prompted to confirm deletion of the instance. This will 
+completely remove the instance include the configuration, logging and home
+directory for the instance user.
+
+
+##### Start/Stop/Restart an instance:
 
     service tomcat7 start/stop/restart
 
-    As root, the instance can be controlled like a regular service. If running
-    as the instance user itself, then the 'tomcat7' script can be used to
-    control the instance:
+As root, the instance can be controlled like a regular service. If running
+as the instance user itself, then the 'tomcat7' script can be used to
+control the instance:
     
     tomcat7 start/stop/restart
     
