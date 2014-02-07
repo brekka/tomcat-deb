@@ -68,7 +68,7 @@ does need to be reasonably unique.
 
 ##### Install using dpkg:
 
-    dpkg -i tomcat_7.0.47_all.deb
+    dpkg -i tomcat_7.0.50_all.deb
     
 
 ##### Create a new instance:
