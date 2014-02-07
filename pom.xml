@@ -210,7 +210,7 @@
     <scm>
         <url>https://github.com/brekka/tomcat-deb.git</url>
         <connection>https://github.com/brekka/tomcat-deb.git</connection>
-        <developerConnection>scm:git:git@github.com:brekka/tomcat-deb.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@github.com:brekka/tomcat-deb.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 </project>
