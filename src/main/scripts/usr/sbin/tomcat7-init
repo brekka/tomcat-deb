@@ -3,7 +3,7 @@
 # Control script for starting/stopping a named Tomcat 7 instance as
 # created by the script '/usr/sbin/addtomcat7'.
 # 
-# Last modified 2013-02-19 by Andrew Taylor
+# Last modified 2014-02-07 by Andrew Taylor
 #
 
 # Seconds to wait for a restart
@@ -28,7 +28,9 @@ if [ -z "${JAVA_HOME}" ] ; then
     exit 1
 fi
 
-CATALINA_PID="${CATALINA_BASE}/tomcat.pid"
+# Running as a non-privileged user we will be unable to write to /var/run.
+# Create as a hidden file in the home directory instead.
+CATALINA_PID="${CATALINA_BASE}/.tomcat.pid"
 
 # Verify the directory does exist
 if [ ! -d "${CATALINA_BASE}" ] ; then
@@ -43,6 +45,11 @@ export JAVA_HOME CATALINA_BASE CATALINA_HOME CATALINA_PID
 
 # Prepare the run-as
 if [ "$USER" != "${TOMCAT_USER}" ] ; then
+    # Not running as the Tomcat user, check we are running as root.
+    if [[ $EUID -ne 0 ]]; then
+       echo "The service for the Tomcat 7 instance '${TOMCAT_USER}' requires root access to $1" 1>&2
+       exit 1
+    fi
     RUNAS="su ${TOMCAT_USER}"
 fi
 

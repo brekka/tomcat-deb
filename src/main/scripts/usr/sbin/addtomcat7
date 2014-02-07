@@ -19,14 +19,20 @@
 # When making changes to the Tomcat instance, switch to the 
 # user first using "su - [user]". 
 # 
-# Last modified 2013-02-19 by Andrew Taylor
+# Last modified 2014-02-07 by Andrew Taylor
 #
+
+# Make sure we are running as root
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
 
 # Import default settings
 . /etc/default/tomcat7
 
 # Change the variable below to be the user to create.
-TOMCAT_USER=$1
+TOMCAT_USER="$1"
 DEFAULT_CONFIG_DIR="${CATALINA_HOME}/conf"
 
 if [ -z "${TOMCAT_USER}" ] ; then
@@ -40,22 +46,33 @@ LOG_DIR="/var/log/${TOMCAT_USER}"
 TMP_DIR="/var/tmp/${TOMCAT_USER}"
 INIT_SCRIPT="/etc/init.d/${TOMCAT_USER}"
 CATALINA_BASE="${TOMCAT_INSTANCE_BASE}/${TOMCAT_USER}"
+BIN_DIR="${CATALINA_BASE}/bin"
 
 if [ -f "${INIT_SCRIPT}" ] ; then
     echo "There is already an init script '${INIT_SCRIPT}', aborting"
     exit 1
 fi
 
-# Check that there is not already a configuration folder for this application
+# Check that there is not already a configuration folder for this name
 if [ -d "${CONFIG_DIR}" ] ; then
 	echo "Configuration directory '${CONFIG_DIR}' already exists, aborting"
     exit 1
 fi
 
+# Check that there is not already a log folder for this name
+if [ -d "${LOG_DIR}" ] ; then
+    echo "Logging directory '${LOG_DIR}' already exists, aborting"
+    exit 1
+fi
 
+# Check that there is not already a home folder for this name
+if [ -d "${CATALINA_BASE}" ] ; then
+    echo "Home directory '${CATALINA_BASE}' already exists, aborting"
+    exit 1
+fi
 
 # Create the system user account
-useradd -d "${CATALINA_BASE}" -m -r -s /bin/bash "$TOMCAT_USER"
+/usr/sbin/useradd -d "${CATALINA_BASE}" -m -r -s /bin/bash "$TOMCAT_USER"
 if [ "$?" != "0" ] ; then
     echo "Unable to create the user '${TOMCAT_USER}', most likely it already exists"
     exit 1
@@ -66,10 +83,10 @@ mkdir "${CONFIG_DIR}"
 mkdir "${CONFIG_DIR}/Catalina"
 mkdir "${LOG_DIR}"
 mkdir "${TMP_DIR}"
+mkdir "${BIN_DIR}"
 mkdir "${CATALINA_BASE}/webapps"
 mkdir "${CATALINA_BASE}/work"
 mkdir "${CATALINA_BASE}/lib"
-mkdir "${CATALINA_BASE}/bin"
 
 # Maintain the Tomcat structure
 ln -s "${CONFIG_DIR}" "${CATALINA_BASE}/conf"
@@ -80,26 +97,52 @@ ln -s "${TMP_DIR}" "${CATALINA_BASE}/temp"
 cp -R "${DEFAULT_CONFIG_DIR}"/* "${CONFIG_DIR}"
 
 # Create init script
-echo "#!/bin/bash" > "${INIT_SCRIPT}"
-echo "### BEGIN INIT INFO" >> "${INIT_SCRIPT}"
-echo "# Provides:         ${TOMCAT_USER} (Tomcat)" >> "${INIT_SCRIPT}"
-echo "# Required-Start:    \$syslog" >> "${INIT_SCRIPT}"
-echo "# Required-Stop:     \$syslog" >> "${INIT_SCRIPT}"
-echo "# Default-Start:     2 3 4 5" >> "${INIT_SCRIPT}"
-echo "# Default-Stop:      0 1 6" >> "${INIT_SCRIPT}"
-echo "# Short-Description: Control ${TOMCAT_USER} tomcat service" >> "${INIT_SCRIPT}"
-echo "# Description:       Tomcat based service hosting the ${TOMCAT_USER} application (see '${CATALINA_BASE}')" >> "${INIT_SCRIPT}"
-echo "### END INIT INFO" >> "${INIT_SCRIPT}"
-echo ". /etc/default/tomcat7" >> "${INIT_SCRIPT}"
-echo "# Uncomment to override defaults from /etc/default/tomcat7" >> "${INIT_SCRIPT}"
-echo -e "#export JAVA_HOME=$JAVA_HOME" >> "${INIT_SCRIPT}"
-echo -e "#export CATALINA_HOME=$CATALINA_HOME" >> "${INIT_SCRIPT}"
-echo -e "export CATALINA_BASE=$CATALINA_BASE" >> "${INIT_SCRIPT}"
-echo -e "/usr/sbin/tomcat7-init \$1 $TOMCAT_USER" >> "${INIT_SCRIPT}"
+cat > "${INIT_SCRIPT}" << EOF
+#!/bin/bash
+### BEGIN INIT INFO
+# Provides:          ${TOMCAT_USER} (Tomcat)
+# Required-Start:    \$syslog
+# Required-Stop:     \$syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Control ${TOMCAT_USER} tomcat service
+# Description:       Tomcat based service hosting the ${TOMCAT_USER} application (see '${CATALINA_BASE}')
+### END INIT INFO
+. /etc/default/tomcat7
+# Uncomment to override defaults from /etc/default/tomcat7
+#export JAVA_HOME="${JAVA_HOME}"
+#export CATALINA_HOME="${CATALINA_HOME}"
+export CATALINA_BASE="${CATALINA_BASE}"
+/usr/sbin/tomcat7-init "\$1" "${TOMCAT_USER}"
+EOF
 chmod 755 "${INIT_SCRIPT}"
 
+# Add startup.sh wrapper (can be customized)
+cat > "${BIN_DIR}/startup.sh" << EOF
+#!/bin/bash
+# Customize environment variables set prior to startup
+
+#export JAVA_OPTS=""
+
+\${CATALINA_HOME}/bin/startup.sh \$*
+EOF
+chmod 755 "${BIN_DIR}/startup.sh"
+
+# Add shutdown.sh wrapper (can be customized)
+cat > "${BIN_DIR}/shutdown.sh" << EOF
+#!/bin/bash
+# Customize environment variables set prior to shutdown
+
+#export JAVA_OPTS=""
+
+\${CATALINA_HOME}/bin/shutdown.sh \$*
+EOF
+chmod 755 "${BIN_DIR}/shutdown.sh"
+
 # Ensure permissions are set correctly
-chown -R $TOMCAT_USER:$TOMCAT_USER "${CATALINA_BASE}/webapps" "${CATALINA_BASE}/work" "${TMP_DIR}" "${LOG_DIR}" "${CONFIG_DIR}/Catalina"
+chown -R "$TOMCAT_USER:$TOMCAT_USER" "${CATALINA_BASE}/webapps" "${CATALINA_BASE}/work" "${TMP_DIR}" "${LOG_DIR}" "${CONFIG_DIR}/Catalina"
 
 INIT_SCRIPT_NAME=`basename ${INIT_SCRIPT}`
-update-rc.d ${INIT_SCRIPT_NAME} defaults 90 10
+/usr/sbin/update-rc.d "${INIT_SCRIPT_NAME}" defaults 90 10
+
+echo "Tomcat 7 instance '${TOMCAT_USER}' has been created, but not started"

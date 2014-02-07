@@ -2,14 +2,20 @@
 #
 # Deletes a Tomcat runtime instance (as created by 'addtomcat7').
 #
-# Last modified 2013-02-19 by Andrew Taylor
+# Last modified 2014-02-07 by Andrew Taylor
 #
+
+# Make sure we are running as root
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 1>&2
+   exit 1
+fi
 
 # Import default settings
 . /etc/default/tomcat7
 
 # Change the variable below to be the user to create.
-TOMCAT_USER=$1
+TOMCAT_USER="$1"
 
 # The 'correct' place for Ubuntu, if not set
 if [ -z "${TOMCAT_INSTANCE_BASE}" ] ; then
@@ -40,23 +46,44 @@ if [ ! -d "${CATALINA_BASE}" ] ; then
     exit 1
 fi
 
-## Last chance to abort.
-echo -n "You are about to delete the Tomcat 7 instance '${TOMCAT_USER}' including all its configuration Are you sure you would you like to continue (yes or no)? "
+# Last chance to abort.
+cat << EOF
+
+You are about to delete the Tomcat 7 instance '${TOMCAT_USER}'. This will 
+remove the service '${TOMCAT_USER}', delete the user account '${TOMCAT_USER}'
+and delete the following directories: 
+
+   ${CONFIG_DIR}
+   ${LOG_DIR}
+   ${CATALINA_BASE}
+   ${TMP_DIR}
+
+If you wish to retain the contents of these folders, then please 
+relocate them out of these folders prior to running this command again.
+
+EOF
+echo -n "Are you sure you would you like to continue (yes or no)? "
 read -e execute_script
 if [ "$execute_script" != "yes" ]; then
 	echo "User aborted, type 'yes' if you really mean to continue"
 	exit 0
 fi
 
-deluser ${TOMCAT_USER}
+# Make sure the service is stopped
+service "${TOMCAT_USER}" stop
+
+# Delete the user account
+deluser "${TOMCAT_USER}"
 if [ "$?" != "0" ] ; then
     echo "The Tomcat runtime instance user '${TOMCAT_USER}' could not be deleted. Aborting..."
     exit 1
 fi
 
-INIT_SCRIPT_NAME=`basename ${INIT_SCRIPT}`
-update-rc.d -f ${INIT_SCRIPT_NAME} remove
+# Remove the init.d service script links
+INIT_SCRIPT_NAME=`basename "${INIT_SCRIPT}"`
+update-rc.d -f "${INIT_SCRIPT_NAME}" remove
+# Remove the files / directories
 rm "${INIT_SCRIPT}"
 rm -Rf "${CONFIG_DIR}" "${LOG_DIR}" "${TMP_DIR}" "${CATALINA_BASE}"
 
-
+echo "Tomcat 7 instance '${TOMCAT_USER}' has been deleted"
