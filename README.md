@@ -76,10 +76,10 @@ does need to be reasonably unique.
     addtomcat7 tomcat7
     
 This will create a new Tomcat 7 instance under "/var/lib/tomcat7" and will
-run as a service under the user "tomcat7". Not that the "server.xml" must
-be amended prior to starting the instance if more than one instance is to
-be deployed. This addtomcat7 script makes no attempt to assign unique 
-ports.
+run as a service under the user "tomcat7". Note that the "server.xml" 
+configuration file must be amended prior to starting the instance if more than
+one instance is to be deployed. This addtomcat7 script makes no attempt to 
+assign unique ports.
 
 
 ##### Delete an instance:
@@ -87,7 +87,7 @@ ports.
     deltomcat7 tomcat7
     
 The user will be prompted to confirm deletion of the instance. This will 
-completely remove the instance include the configuration, logging and home
+completely remove the instance including the configuration, logging and home
 directory for the instance user.
 
 
