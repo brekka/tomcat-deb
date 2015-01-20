@@ -51,7 +51,7 @@ Building
 The Apache Tomcat zip must be downloaded manually and placed in the local Maven 
 repository under the following path:
 
-    ${user}/.m2/repository/org/apache/apache-tomcat/[version]/apache-tomcat-[version].zip
+    ${user}/.m2/repository/org/apache/tomcat/apache-tomcat/[version]/apache-tomcat-[version].zip
 
 Once that is in place, the project can be built using Maven 3:
 
