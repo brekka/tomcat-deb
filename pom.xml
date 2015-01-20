@@ -19,7 +19,7 @@
     </licenses>
     
     <artifactId>tomcat-deb</artifactId>
-    <version>7.0.57-SNAPSHOT</version>
+    <version>7.0.57</version>
     
     <properties>
         <tomcat.version>7.0.57</tomcat.version>
@@ -211,6 +211,6 @@
         <url>https://github.com/brekka/tomcat-deb.git</url>
         <connection>https://github.com/brekka/tomcat-deb.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/brekka/tomcat-deb.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v7.0.57</tag>
     </scm>
 </project>
