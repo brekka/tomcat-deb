@@ -36,7 +36,7 @@ Java 7 or higher must be installed. Tested with OpenJDK 7.
 Releases
 --------
 
-The latest release is 7.0.54, and can be found here: [tomcat-deb-7.0.54.deb](https://brekka.org/maven/content/repositories/releases/org/brekka/tomcat-deb/7.0.54/tomcat-deb-7.0.54.deb)
+The latest release is 7.0.57, and can be found here: [tomcat-deb-7.0.57.deb](https://brekka.org/maven/content/repositories/releases/org/brekka/tomcat-deb/7.0.57/tomcat-deb-7.0.57.deb)
 
 
 Licence
@@ -68,7 +68,7 @@ does need to be reasonably unique.
 
 ##### Install using dpkg:
 
-    dpkg -i tomcat_7.0.54_all.deb
+    dpkg -i tomcat_7.0.57_all.deb
     
 
 ##### Create a new instance:
