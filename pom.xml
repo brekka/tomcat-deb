@@ -19,10 +19,10 @@
     </licenses>
     
     <artifactId>tomcat-deb</artifactId>
-    <version>7.0.58-SNAPSHOT</version>
+    <version>7.0.61-SNAPSHOT</version>
     
     <properties>
-        <tomcat.version>7.0.57</tomcat.version>
+        <tomcat.version>7.0.61</tomcat.version>
         <dist.dir>${project.build.directory}/tomcat-dist</dist.dir>
         <target.usr>/usr/share/tomcat7</target.usr>
         <package_name>brekka-tomcat7</package_name>
