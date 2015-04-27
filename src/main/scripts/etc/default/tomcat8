@@ -1,4 +1,4 @@
-# This is the default configuration file for tomcat7
+# This is the default configuration file for tomcat8
 
 # Ensure Java is present
 if [ -z "${JAVA_HOME}" ] ; then
@@ -26,5 +26,5 @@ if [ -z "${TOMCAT_INSTANCE_BASE}" ] ; then
 fi
 
 # Static location where the distribution can be found
-CATALINA_HOME="/usr/share/tomcat7"
+CATALINA_HOME="/usr/share/tomcat8"
 export CATALINA_HOME TOMCAT_INSTANCE_BASE JAVA_HOME

@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# Deletes a Tomcat runtime instance (as created by 'addtomcat7').
+# Deletes a Tomcat runtime instance (as created by 'addtomcat8').
 #
-# Last modified 2014-02-07 by Andrew Taylor
+# Last modified 2015-04-27 by Andrew Taylor
 #
 
 # Make sure we are running as root
@@ -12,7 +12,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Import default settings
-. /etc/default/tomcat7
+. /etc/default/tomcat8
 
 # Change the variable below to be the user to create.
 TOMCAT_USER="$1"
@@ -49,7 +49,7 @@ fi
 # Last chance to abort.
 cat << EOF
 
-You are about to delete the Tomcat 7 instance '${TOMCAT_USER}'. This will 
+You are about to delete the Tomcat 8 instance '${TOMCAT_USER}'. This will 
 remove the service '${TOMCAT_USER}', delete the user account '${TOMCAT_USER}'
 and delete the following directories: 
 
@@ -86,4 +86,4 @@ update-rc.d -f "${INIT_SCRIPT_NAME}" remove
 rm "${INIT_SCRIPT}"
 rm -Rf "${CONFIG_DIR}" "${LOG_DIR}" "${TMP_DIR}" "${CATALINA_BASE}"
 
-echo "Tomcat 7 instance '${TOMCAT_USER}' has been deleted"
+echo "Tomcat 8 instance '${TOMCAT_USER}' has been deleted"

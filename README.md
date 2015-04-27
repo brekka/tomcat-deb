@@ -4,7 +4,7 @@ Brekka multi-instance Tomcat DEB
 Overview
 --------
 
-Repackages a standard Apache Tomcat 7 zip distribution into a DEB archive for 
+Repackages a standard Apache Tomcat 8 zip distribution into a DEB archive for 
 easy installation on Debian based Linux distributions. Also includes a set of 
 scripts for creating and deleting independent Tomcat instances (with their own
 catalina.base, running under their own user account). By default the 
@@ -19,12 +19,12 @@ zip:
  
 The following additional artifacts will be included:
 
- * /etc/default/tomcat7   - Default configuration for all Tomcat instances.
- * /usr/bin/tomcat7       - User script for starting/stopping the Tomcat 
+ * /etc/default/tomcat8   - Default configuration for all Tomcat instances.
+ * /usr/bin/tomcat8       - User script for starting/stopping the Tomcat 
                             instance.
- * /usr/sbin/addtomcat7   - Creates a new instance.
- * /usr/sbin/deltomcat7   - Deletes a previously created instance.
- * /usr/sbin/tomcat7-init - Init script used to control the instances.
+ * /usr/sbin/addtomcat8   - Creates a new instance.
+ * /usr/sbin/deltomcat8   - Deletes a previously created instance.
+ * /usr/sbin/tomcat8-init - Init script used to control the instances.
 
 
 Requirements
@@ -36,7 +36,7 @@ Java 7 or higher must be installed. Tested with OpenJDK 7.
 Releases
 --------
 
-The latest release is 7.0.61, and can be found here: [tomcat-deb-7.0.61.deb](https://brekka.org/maven/content/repositories/releases/org/brekka/tomcat-deb/7.0.61/tomcat-deb-7.0.61.deb)
+The latest release is 8.0.21, and can be found here: [tomcat-deb-8.0.21.deb](https://brekka.org/maven/content/repositories/releases/org/brekka/tomcat-deb/8.0.21/tomcat-deb-8.0.21.deb)
 
 
 Licence
@@ -61,30 +61,30 @@ Once that is in place, the project can be built using Maven 3:
 Usage
 -----
 
-For these examples we use 'tomcat7' as the name of an instance, but this can be
+For these examples we use 'tomcat8' as the name of an instance, but this can be
 tailored to the application it will be hosting. The name of the instance will
 be used for the service name, run-as user and directory under '/var/lib' so it
 does need to be reasonably unique.
 
 ##### Install using dpkg:
 
-    dpkg -i tomcat_7.0.61_all.deb
+    dpkg -i tomcat_8.0.21_all.deb
     
 
 ##### Create a new instance:
 
-    addtomcat7 tomcat7
+    addtomcat8 tomcat8
     
-This will create a new Tomcat 7 instance under "/var/lib/tomcat7" and will
-run as a service under the user "tomcat7". Note that the "server.xml" 
+This will create a new Tomcat 8 instance under "/var/lib/tomcat8" and will
+run as a service under the user "tomcat8". Note that the "server.xml" 
 configuration file must be amended prior to starting the instance if more than
-one instance is to be deployed. This addtomcat7 script makes no attempt to 
+one instance is to be deployed. This addtomcat8 script makes no attempt to 
 assign unique ports.
 
 
 ##### Delete an instance:
 
-    deltomcat7 tomcat7
+    deltomcat8 tomcat8
     
 The user will be prompted to confirm deletion of the instance. This will 
 completely remove the instance including the configuration, logging and home
@@ -93,12 +93,12 @@ directory for the instance user.
 
 ##### Start/Stop/Restart an instance:
 
-    service tomcat7 start/stop/restart
+    service tomcat8 start/stop/restart
 
 As root, the instance can be controlled like a regular service. If running
-as the instance user itself, then the 'tomcat7' script can be used to
+as the instance user itself, then the 'tomcat8' script can be used to
 control the instance:
     
-    tomcat7 start/stop/restart
+    tomcat8 start/stop/restart
     
 
