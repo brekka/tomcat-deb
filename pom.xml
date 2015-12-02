@@ -19,7 +19,7 @@
     </licenses>
     
     <artifactId>tomcat-deb</artifactId>
-    <version>8.0.29-SNAPSHOT</version>
+    <version>8.0.29</version>
     
     <properties>
         <tomcat.version>8.0.29</tomcat.version>
@@ -211,6 +211,6 @@
         <url>https://github.com/brekka/tomcat-deb.git</url>
         <connection>https://github.com/brekka/tomcat-deb.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/brekka/tomcat-deb.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v8.0.29</tag>
     </scm>
 </project>
