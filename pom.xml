@@ -19,10 +19,10 @@
     </licenses>
     
     <artifactId>tomcat-deb</artifactId>
-    <version>8.0.22-SNAPSHOT</version>
+    <version>8.0.29-SNAPSHOT</version>
     
     <properties>
-        <tomcat.version>8.0.21</tomcat.version>
+        <tomcat.version>8.0.29</tomcat.version>
         <dist.dir>${project.build.directory}/tomcat-dist</dist.dir>
         <target.usr>/usr/share/tomcat8</target.usr>
         <package_name>brekka-tomcat8</package_name>

@@ -36,7 +36,7 @@ Java 7 or higher must be installed. Tested with OpenJDK 7.
 Releases
 --------
 
-The latest release is 8.0.21, and can be found here: [tomcat-deb-8.0.21.deb](https://brekka.org/maven/content/repositories/releases/org/brekka/tomcat-deb/8.0.21/tomcat-deb-8.0.21.deb)
+The latest release is 8.0.29, and can be found here: [tomcat-deb-8.0.29.deb](https://brekka.org/maven/content/repositories/releases/org/brekka/tomcat-deb/8.0.29/tomcat-deb-8.0.29.deb)
 
 
 Licence
@@ -68,7 +68,7 @@ does need to be reasonably unique.
 
 ##### Install using dpkg:
 
-    dpkg -i tomcat_8.0.21_all.deb
+    dpkg -i tomcat_8.0.29_all.deb
     
 
 ##### Create a new instance:
