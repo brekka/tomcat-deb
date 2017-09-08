@@ -4,7 +4,7 @@
 # When running as an instance user, allow the Tomcat
 # instance to be controlled.
 #
-# Last modified 2015-04-27 by Andrew Taylor
+# Last modified 2017-09-08 by Andrew Taylor
 #
 
 TOMCAT_USER=$1

@@ -3,5 +3,5 @@ Version: [[version]]
 Section: misc
 Priority: low
 Architecture: all
-Description: Apache Tomcat 8 (multi-instance).
+Description: Apache Tomcat 8.5 (multi-instance).
 Maintainer: andrew@brekka.org

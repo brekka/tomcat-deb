@@ -4,7 +4,7 @@
 # dedicated system user account where the home directory is used
 # as the ${CATALINA_BASE}. Thus the Tomcat installation binaries
 # and default configuration are retained in the 
-# /usr/share/tomcat8 directory while application specific 
+# /usr/share/tomcat85 directory while application specific 
 # settings are kept within the home directory of the instance 
 # user. 
 #
@@ -19,7 +19,7 @@
 # When making changes to the Tomcat instance, switch to the 
 # user first using "su - [user]". 
 # 
-# Last modified 2015-04-27 by Andrew Taylor
+# Last modified 2017-09-08 by Andrew Taylor
 #
 
 # Make sure we are running as root
@@ -29,7 +29,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Import default settings
-. /etc/default/tomcat8
+. /etc/default/tomcat85
 
 # Change the variable below to be the user to create.
 TOMCAT_USER="$1"
@@ -108,12 +108,12 @@ cat > "${INIT_SCRIPT}" << EOF
 # Short-Description: Control ${TOMCAT_USER} tomcat service
 # Description:       Tomcat based service hosting the ${TOMCAT_USER} application (see '${CATALINA_BASE}')
 ### END INIT INFO
-. /etc/default/tomcat8
-# Uncomment to override defaults from /etc/default/tomcat8
+. /etc/default/tomcat85
+# Uncomment to override defaults from /etc/default/tomcat85
 #export JAVA_HOME="${JAVA_HOME}"
 #export CATALINA_HOME="${CATALINA_HOME}"
 export CATALINA_BASE="${CATALINA_BASE}"
-/usr/sbin/tomcat8-init "\$1" "${TOMCAT_USER}"
+/usr/sbin/tomcat85-init "\$1" "${TOMCAT_USER}"
 EOF
 chmod 755 "${INIT_SCRIPT}"
 

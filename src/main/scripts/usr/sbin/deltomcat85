@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# Deletes a Tomcat runtime instance (as created by 'addtomcat8').
+# Deletes a Tomcat runtime instance (as created by 'addtomcat85').
 #
-# Last modified 2015-04-27 by Andrew Taylor
+# Last modified 2017-09-08 by Andrew Taylor
 #
 
 # Make sure we are running as root
@@ -12,7 +12,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 # Import default settings
-. /etc/default/tomcat8
+. /etc/default/tomcat85
 
 # Change the variable below to be the user to create.
 TOMCAT_USER="$1"

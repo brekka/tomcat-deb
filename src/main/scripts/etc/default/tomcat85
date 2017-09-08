@@ -1,4 +1,4 @@
-# This is the default configuration file for tomcat8
+# This is the default configuration file for tomcat85
 
 # Ensure Java is present
 if [ -z "${JAVA_HOME}" ] ; then
@@ -8,7 +8,7 @@ if [ -z "${JAVA_HOME}" ] ; then
         # Try for a JRE
         JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")
         if [ ! -x "${JAVA_HOME}/bin/java" ] ; then
-            echo "No suitable JAVA_HOME found. Please ensure that a Java 7 distribution has been installed" 1>&2
+            echo "No suitable JAVA_HOME found. Please ensure that a Java 8 distribution has been installed" 1>&2
             exit 1
         fi
     fi
@@ -26,5 +26,5 @@ if [ -z "${TOMCAT_INSTANCE_BASE}" ] ; then
 fi
 
 # Static location where the distribution can be found
-CATALINA_HOME="/usr/share/tomcat8"
+CATALINA_HOME="/usr/share/tomcat85"
 export CATALINA_HOME TOMCAT_INSTANCE_BASE JAVA_HOME
