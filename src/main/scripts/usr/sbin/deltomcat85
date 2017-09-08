@@ -49,7 +49,7 @@ fi
 # Last chance to abort.
 cat << EOF
 
-You are about to delete the Tomcat 8 instance '${TOMCAT_USER}'. This will 
+You are about to delete the Tomcat 8.5 instance '${TOMCAT_USER}'. This will 
 remove the service '${TOMCAT_USER}', delete the user account '${TOMCAT_USER}'
 and delete the following directories: 
 
@@ -86,4 +86,4 @@ update-rc.d -f "${INIT_SCRIPT_NAME}" remove
 rm "${INIT_SCRIPT}"
 rm -Rf "${CONFIG_DIR}" "${LOG_DIR}" "${TMP_DIR}" "${CATALINA_BASE}"
 
-echo "Tomcat 8 instance '${TOMCAT_USER}' has been deleted"
+echo "Tomcat 8.5 instance '${TOMCAT_USER}' has been deleted"

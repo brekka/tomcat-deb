@@ -145,4 +145,4 @@ chown -R "$TOMCAT_USER:$TOMCAT_USER" "${CATALINA_BASE}/webapps" "${CATALINA_BASE
 INIT_SCRIPT_NAME=`basename ${INIT_SCRIPT}`
 /usr/sbin/update-rc.d "${INIT_SCRIPT_NAME}" defaults 90 10
 
-echo "Tomcat 8 instance '${TOMCAT_USER}' has been created, but not started"
+echo "Tomcat 8.5 instance '${TOMCAT_USER}' has been created, but not started"

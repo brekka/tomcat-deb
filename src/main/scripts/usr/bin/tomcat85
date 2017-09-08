@@ -19,7 +19,7 @@ if [ -z "$2" ] ; then
     	TOMCAT_USER=${USER}
     	ACTION=$1
     else
-        echo "Not currently a Tomcat 8 application user, you must specify the name of the application user, e.g. tomcat atlas start"
+        echo "Not currently a Tomcat 8.5 application user, you must specify the name of the application user, e.g. tomcat atlas start"
     	exit 1
     fi
 fi
